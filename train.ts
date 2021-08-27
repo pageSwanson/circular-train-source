@@ -1,53 +1,52 @@
-import { List } from "simple-double-linked-list";
-import { ListIterator } from "simple-double-linked-list/dist/src/listIterator";
+import {printTrain, turnOffLight, turnOnLight, isLightOn, goToPriorCar, goToNextCar, startTrain} from "./train";
 
-var _train = new List<boolean>();
-var train : ListIterator<boolean>;
+// turn off light where I am (if on)
+// move to car, turn on lights whenever off
+// whenever a light is flipped, return n many cars
+// if you trek back and find your car light on, you found n
 
-function startTrain(carCount : number) : void {
-  _train = new List<boolean>();
+var totalVisited = 0;
 
-  for (let i = 0; i < carCount; i++) {
-    _train.AddFront(Math.random() < 0.5);
-  }
-
-  _train.Print();
-
-  train = _train.Begin();
+function checkNextCar() : boolean {
+    goToNextCar();
+    totalVisited++;
+    return isLightOn();
 }
 
-function goToNextCar() : void {
-  train.Next();
-
-  if (train.IsAtEnd()) {
-    train.ToFirst();
-    return;
-  }
-};
-
-function goToPriorCar() : void {
-  train.Previous();
-
-  if (train.Value() == null) {
-    train.ToLast()
-  }
-};
-
-function isLightOn() : boolean {
-  let isLit = train.Value();
-  return isLit;
-};
-
-function turnOnLight() : void {
-   _train.Update(train, true);
-};
-
-function turnOffLight() : void {
-  _train.Update(train, false);
-};
-
-function printTrain() : void {
-  _train.Print();
+function explore() : number {
+    let carsVisited = 1;
+    while (checkNextCar()) {
+        carsVisited++;
+    }
+    turnOnLight();
+    return carsVisited;
 }
 
-export {printTrain, turnOffLight, turnOnLight, isLightOn, goToPriorCar, goToNextCar, startTrain}
+function goBack(distanceToStartingCar : number) : boolean {
+    for (let i = 0; i < distanceToStartingCar; i++) {
+        goToPriorCar();
+        totalVisited++;
+    }
+
+    if (isLightOn()) {
+        // we found the end of the train
+        return true;
+    }
+    return false;
+}
+
+function solve() : number {
+  let lengthOfTrain = explore();
+
+  while (!goBack(lengthOfTrain)) {
+    lengthOfTrain = explore();
+  }
+  return lengthOfTrain;
+}
+
+startTrain(4);
+turnOffLight();
+
+console.log(solve());
+console.log(totalVisited);
+printTrain();
