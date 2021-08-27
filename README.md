@@ -7,6 +7,7 @@ under section 'Riddler Classic'
 ## sandbox
 this sandbox https://codesandbox.io/s/loving-cache-3kd8p can be used for executing code in the browser
 
+## solution references and information
 https://www.youtube.com/watch?v=y5TExT6QNCc link to video solution
 
 https://en.wikipedia.org/wiki/Doubly_linked_list some information on doubly linked lists - the data structure used for the train implementation
